@@ -175,7 +175,7 @@ class ZspaceMediaFresh(_PluginBase):
             else:
                 tvlib_list = []
 
-            logger.info(f"类目整理：{moivelib_list} {tvlib_list}")
+            logger.info(f"类目整理：{self._moivelib} {self._tvlib}")
             classify_list = moivelib_list + tvlib_list
             logger.info(f"开始刷新极影视，最近{self._timescope} {self._unit}内网盘入库媒体：{len(filtered_transferhistorys)}个,需刷新媒体库：{classify_list}")
         # 刷新极影视
