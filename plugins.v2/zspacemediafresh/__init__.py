@@ -169,10 +169,10 @@ class ZspaceMediaFresh(_PluginBase):
             unique_types = set([th.type for th in filtered_transferhistorys])
             types_list =list(unique_types)
             if "电影" in types_list:
-                moivelib_list = []
                 moivelib_list = self._moivelib.replace("，", ",").split(",")
+            else:
+                moivelib_list = []
             if "电视剧" in types_list:
-                tvlib_list = []
                 tvlib_list = self._tvlib.replace("，", ",").split(",")
             else:
                 tvlib_list = []
