@@ -295,29 +295,29 @@ class ZspaceMediaFresh(_PluginBase):
     def get_api(self) -> List[Dict[str, Any]]:
         pass
 
-    def get_service(self) -> List[Dict[str, Any]]:
-    """
-    注册插件公共服务
-    [{
-        "id": "服务ID",
-        "name": "服务名称",
-        "trigger": "触发器：cron/interval/date/CronTrigger.from_crontab()",
-        "func": self.xxx,
-        "kwargs": {} # 定时器参数
-    }]
-    """
-    if self._enabled and self._cron:
-        return [
-            {
-                "id": "zspacemediafresh",
-                "name": "刷新极空间媒体定时服务",
-                "trigger": CronTrigger.from_crontab(self._cron),
-                "func": self.refresh,
-                "kwargs": {}
-            }
-        ]
-    else:
-        return []
+    # def get_service(self) -> List[Dict[str, Any]]:
+    # """
+    # 注册插件公共服务
+    # [{
+    #     "id": "服务ID",
+    #     "name": "服务名称",
+    #     "trigger": "触发器：cron/interval/date/CronTrigger.from_crontab()",
+    #     "func": self.xxx,
+    #     "kwargs": {} # 定时器参数
+    # }]
+    # """
+    # if self._enabled and self._cron:
+    #     return [
+    #         {
+    #             "id": "zspacemediafresh",
+    #             "name": "刷新极空间媒体定时服务",
+    #             "trigger": CronTrigger.from_crontab(self._cron),
+    #             "func": self.refresh,
+    #             "kwargs": {}
+    #         }
+    #     ]
+    # else:
+    #     return []
 
 
     def get_form(self) -> Tuple[List[dict], Dict[str, Any]]:
