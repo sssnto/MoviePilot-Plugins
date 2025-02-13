@@ -316,6 +316,9 @@ class ZspaceMediaFresh(_PluginBase):
                 "kwargs": {}
             }
         ]
+    else:
+        return []
+
 
     def get_form(self) -> Tuple[List[dict], Dict[str, Any]]:
         """
