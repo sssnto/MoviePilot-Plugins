@@ -19,17 +19,17 @@ from app.utils.http import RequestUtils
 
 class ZspaceMediaFresh(_PluginBase):
     # 插件名称
-    plugin_name = "刷新极影视"
+    plugin_name = "fresh极影视"
     # 插件描述
     plugin_desc = "定时刷新极影视。"
     # 插件图标
-    plugin_icon = "https://raw.githubusercontent.com/gxterry/MoviePilot-Plugins/main/icons/Zspace_B.png"
+    plugin_icon = "https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/icons/Zspace_B.png"
     # 插件版本
-    plugin_version = "2.1.0"
+    plugin_version = "3.0.0"
     # 插件作者
-    plugin_author = "gxterry"
+    plugin_author = "sssnto"
     # 作者主页
-    author_url = "https://github.com/gxterry"
+    author_url = "https://github.com/sssnto"
     # 插件配置项ID前缀
     plugin_config_prefix = "zspacemediafresh_"
     # 加载顺序
@@ -208,6 +208,11 @@ class ZspaceMediaFresh(_PluginBase):
         cookie = RequestUtils.cookie_parse(self._zspcookie)
         token = cookie['token']
         device_id = cookie['device_id']
+        device = cookie['device']
+        version = cookie['version']
+        _l = cookie['_l']
+        nasid = cookie['nasid']
+
         msgtext= None
         total_msgtext = ""
         # 获取分类列表
@@ -229,7 +234,7 @@ class ZspaceMediaFresh(_PluginBase):
                             continue
                         # 提交刷新请求
                         rescan_url = "%s/zvideo/classification/rescan?&rnd=%s&webagent=v2" % (self._zsphost, self.generate_string())
-                        formdata = {"classification_id": name_id_dict[classify],"device_id":device_id,"token":token,"device":"PC电脑","plat":"web"}
+                        formdata = {"classification_id": name_id_dict[classify],"device_id":device_id,"token":token,"device":device,"plat":"web","_l":_l,"version":version,"nasid":nasid}
                         rescanres = RequestUtils(headers={"Content-Type": "application/x-www-form-urlencoded"},cookies=self._zspcookie).post_res(rescan_url,formdata)
                         rescanres_json = rescanres.json()
                         logger.debug(f"提交刷新请求--rescanres_json：{rescanres_json}")
