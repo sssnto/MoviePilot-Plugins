@@ -203,6 +203,10 @@ class ZspaceMediaFresh(_PluginBase):
         """
         刷新极影视
         """
+
+        logger.info(f"_zsphost ：{self._zsphost}")
+        logger.info(f"_zspcookie ：{self._zspcookie}")
+
         if not self._zsphost or not self._zspcookie:
             return False
         cookie = RequestUtils.cookie_parse(self._zspcookie)
