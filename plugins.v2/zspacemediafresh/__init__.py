@@ -221,7 +221,7 @@ class ZspaceMediaFresh(_PluginBase):
             return False
 
         # 检查必要的cookie字段
-        required_fields = ['token', 'device_id', 'device', 'version', '_l', 'nasid']
+        required_fields = ['token', 'device_id', 'device', 'version', '_l', 'nas_id']
         missing_fields = []
         for field in required_fields:
             if field not in cookie:
@@ -241,7 +241,7 @@ class ZspaceMediaFresh(_PluginBase):
         logger.info(f"version ：{version}")
         _l = cookie['_l']
         logger.info(f"_l ：{_l}")
-        nasid = cookie['nasid']
+        nasid = cookie['nas_id']
         logger.info(f"nasid ：{nasid}")
 
         msgtext= None
