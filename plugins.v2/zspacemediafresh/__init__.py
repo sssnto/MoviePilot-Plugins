@@ -288,7 +288,7 @@ class ZspaceMediaFresh(_PluginBase):
                                 resultRep = RequestUtils(headers={"Content-Type": "application/x-www-form-urlencoded"},
                                                         cookies=self._zspcookie).post_res(result_url, formdata)
                                 result_json = resultRep.json()
-                                if result_json and result_json["code"] in ["200","N120024"] and result_json["data"]["task_status"] == 4:
+                                if result_json and result_json["code"] in ["200","N120024"] and result_json["data"]["task_status"] != 2:
                                     logger.info(f"分类：{classify} 刷新执行中,等待{self._waittime}秒，task_id：{rescanres_json['data']['task_id']}")
                                     time.sleep(int(self._waittime))  #任务状态进行中 等待
                                 else:
