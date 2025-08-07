@@ -209,7 +209,13 @@ class ZspaceMediaFresh(_PluginBase):
 
         if not self._zsphost or not self._zspcookie:
             return False
+
+        logger.info(f"cookie parse start")
+
         cookie = RequestUtils.cookie_parse(self._zspcookie)
+
+        logger.info(f"cookie ：{cookie}")
+
         token = cookie['token']
         logger.info(f"token ：{token}")
         device_id = cookie['device_id']
@@ -217,7 +223,7 @@ class ZspaceMediaFresh(_PluginBase):
         device = cookie['device']
         logger.info(f"device ：{device}")
         version = cookie['version']
-        logger.info(f"version ：{devversionice}")
+        logger.info(f"version ：{version}")
         _l = cookie['_l']
         logger.info(f"_l ：{_l}")
         nasid = cookie['nasid']
