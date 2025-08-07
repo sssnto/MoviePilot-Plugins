@@ -204,18 +204,24 @@ class ZspaceMediaFresh(_PluginBase):
         刷新极影视
         """
 
-        logger.info(f"_zsphost ：{self._zsphost}")
-        logger.info(f"_zspcookie ：{self._zspcookie}")
+        # logger.info(f"_zsphost ：{self._zsphost}")
+        # logger.info(f"_zspcookie ：{self._zspcookie}")
 
         if not self._zsphost or not self._zspcookie:
             return False
         cookie = RequestUtils.cookie_parse(self._zspcookie)
         token = cookie['token']
+        logger.info(f"token ：{token}")
         device_id = cookie['device_id']
+        logger.info(f"device_id ：{device_id}")
         device = cookie['device']
+        logger.info(f"device ：{device}")
         version = cookie['version']
+        logger.info(f"version ：{devversionice}")
         _l = cookie['_l']
+        logger.info(f"_l ：{_l}")
         nasid = cookie['nasid']
+        logger.info(f"nasid ：{nasid}")
 
         msgtext= None
         total_msgtext = ""
