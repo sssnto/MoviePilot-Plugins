@@ -211,7 +211,7 @@ class ZspaceMediaFresh(_PluginBase):
             logger.error("极空间主机地址或cookie未配置")
             return False
 
-        logger.info(f"cookie parse start")
+        # logger.info(f"cookie parse start")
 
         try:
             cookie = cookie_parse(self._zspcookie)
@@ -232,30 +232,30 @@ class ZspaceMediaFresh(_PluginBase):
             return False
 
         token = cookie['token']
-        logger.info(f"token ：{token}")
+        # logger.info(f"token ：{token}")
         device_id = cookie['device_id']
-        logger.info(f"device_id ：{device_id}")
+        # logger.info(f"device_id ：{device_id}")
         device = cookie['device']
-        logger.info(f"device ：{device}")
+        # logger.info(f"device ：{device}")
         version = cookie['version']
-        logger.info(f"version ：{version}")
+        # logger.info(f"version ：{version}")
         _l = cookie['_l']
-        logger.info(f"_l ：{_l}")
+        # logger.info(f"_l ：{_l}")
         nasid = cookie['nas_id']
-        logger.info(f"nasid ：{nasid}")
+        # logger.info(f"nasid ：{nasid}")
 
         msgtext= None
         total_msgtext = ""
 
         # 获取分类列表
         list_url = "%s/zvideo/classification/list?&rnd=%s&webagent=v2" % (self._zsphost, self.generate_string() )
-        logger.info(f"获取极影视分类URL ：{list_url}")
+        # logger.info(f"获取极影视分类URL ：{list_url}")
 
         try:
-            logger.info(f"获取极影视分类cookies ：{self._zspcookie}")
+            # logger.info(f"获取极影视分类cookies ：{self._zspcookie}")
 
             rsp_body=RequestUtils(cookies=self._zspcookie).post_res(list_url)
-            logger.info(f"获取极影视分类rsp_body ：{rsp_body}")
+            # logger.info(f"获取极影视分类rsp_body ：{rsp_body}")
 
             res = rsp_body.json()
             logger.debug(f"获取极影视分类 ：{res}")
