@@ -167,13 +167,17 @@ class ZspaceMediaFresh(_PluginBase):
                 return
             # 提取顶级分类  电影或电视剧
             unique_types = set([th.type for th in filtered_transferhistorys])
+            unique_categorys = set([th.category for th in filtered_transferhistorys])
+            logger.info(f"unique_categorys: {unique_categorys}")
             types_list =list(unique_types)
             if "电影" in types_list:
                 moivelib_list = self._moivelib.replace("，", ",").split(",")
+                moivelib_list = list(set(moivelib_list) & unique_categorys)
             else:
                 moivelib_list = []
             if "电视剧" in types_list:
                 tvlib_list = self._tvlib.replace("，", ",").split(",")
+                tvlib_list = list(set(tvlib_list) & unique_categorys)
             else:
                 tvlib_list = []
             classify_list = moivelib_list + tvlib_list
