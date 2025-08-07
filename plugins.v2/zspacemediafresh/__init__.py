@@ -14,7 +14,7 @@ from app.core.config import settings
 from app.log import logger
 from app.plugins import _PluginBase
 from app.schemas.types import EventType, NotificationType
-from app.utils.http import RequestUtils
+from app.utils.http import RequestUtils, cookie_parse
 
 
 class ZspaceMediaFresh(_PluginBase):
@@ -214,7 +214,7 @@ class ZspaceMediaFresh(_PluginBase):
         logger.info(f"cookie parse start")
 
         try:
-            cookie = RequestUtils.cookie_parse(self._zspcookie)
+            cookie = cookie_parse(self._zspcookie)
             logger.info(f"cookie解析成功：{cookie}")
         except Exception as e:
             logger.error(f"cookie解析失败：{str(e)}")
