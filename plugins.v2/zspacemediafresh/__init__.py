@@ -168,7 +168,7 @@ class ZspaceMediaFresh(_PluginBase):
             # 提取顶级分类  电影或电视剧
             unique_types = set([th.type for th in filtered_transferhistorys])
             unique_categorys = set([th.category for th in filtered_transferhistorys])
-            logger.info(f"unique_categorys: {unique_categorys}")
+            # logger.info(f"unique_categorys: {unique_categorys}")
             types_list =list(unique_types)
             if "电影" in types_list:
                 moivelib_list = self._moivelib.replace("，", ",").split(",")
@@ -219,7 +219,7 @@ class ZspaceMediaFresh(_PluginBase):
 
         try:
             cookie = cookie_parse(self._zspcookie)
-            logger.info(f"cookie解析成功：{cookie}")
+            # logger.info(f"cookie解析成功：{cookie}")
         except Exception as e:
             logger.error(f"cookie解析失败：{str(e)}")
             return False
