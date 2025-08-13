@@ -25,7 +25,7 @@ class ZspaceMediaFresh(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/icons/Zspace_B.png"
     # 插件版本
-    plugin_version = "3.0.0"
+    plugin_version = "3.0.1"
     # 插件作者
     plugin_author = "sssnto"
     # 作者主页
@@ -660,7 +660,7 @@ class ZspaceMediaFresh(_PluginBase):
                                             'variant': 'tonal',
                                             'text': '- 网盘媒体库路径：MP网盘媒体库路径,可在历史记录或媒体库配置处查看 ' + '\n' +
                                                     '- cookie：极空间web端cookie' + '\n' +
-                                                    '- 详细说明：https://raw.githubusercontent.com/gxterry/MoviePilot-Plugins/main/docs/zspacemediafresh.md',
+                                                    '- 详细说明：https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/docs/zspacemediafresh.md',
                                             'style': 'white-space: pre-line;'
                                         }
                                     }
