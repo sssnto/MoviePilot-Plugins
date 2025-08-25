@@ -259,7 +259,7 @@ class ZspaceMediaFresh(_PluginBase):
             # logger.info(f"获取极影视分类cookies ：{self._zspcookie}")
 
             rsp_body=RequestUtils(cookies=self._zspcookie).post_res(list_url)
-            # logger.info(f"获取极影视分类rsp_body ：{rsp_body}")
+            logger.info(f"获取极影视分类rsp_body ：{rsp_body}")
 
             res = rsp_body.json()
             logger.debug(f"获取极影视分类 ：{res}")
@@ -278,6 +278,7 @@ class ZspaceMediaFresh(_PluginBase):
                         rescan_url = "%s/zvideo/classification/rescan?&rnd=%s&webagent=v2" % (self._zsphost, self.generate_string())
                         formdata = {"classification_id": name_id_dict[classify],"device_id":device_id,"token":token,"device":device,"plat":"web","_l":_l,"version":version,"nasid":nasid}
                         rescanres = RequestUtils(headers={"Content-Type": "application/x-www-form-urlencoded"},cookies=self._zspcookie).post_res(rescan_url,formdata)
+                        logger.info(f"提交刷新rescanres resp：{rsp_body}")
                         rescanres_json = rescanres.json()
                         logger.debug(f"提交刷新请求--rescanres_json：{rescanres_json}")
                         start_time = time.time()# 记录开始时间
@@ -291,6 +292,8 @@ class ZspaceMediaFresh(_PluginBase):
                                 #轮询状态
                                 resultRep = RequestUtils(headers={"Content-Type": "application/x-www-form-urlencoded"},
                                                         cookies=self._zspcookie).post_res(result_url, formdata)
+                                logger.info(f"获取刷新结果 resultRep：{resultRep}")
+
                                 result_json = resultRep.json()
                                 if result_json and result_json["code"] in ["200","N120024"] and result_json["data"]["task_status"] != 2:
                                     logger.info(f"分类：{classify} 刷新执行中,等待{self._waittime}秒，task_id：{rescanres_json['data']['task_id']}")
