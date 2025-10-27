@@ -253,10 +253,10 @@ class ZspaceMediaFresh(_PluginBase):
 
         # 获取分类列表
         list_url = "%s/zvideo/classification/list?&rnd=%s&webagent=v2" % (self._zsphost, self.generate_string() )
-        # logger.info(f"获取极影视分类URL ：{list_url}")
+        logger.info(f"获取极影视分类URL ：{list_url}")
 
         try:
-            # logger.info(f"获取极影视分类cookies ：{self._zspcookie}")
+            logger.info(f"获取极影视分类cookies ：{self._zspcookie}")
 
             rsp_body=RequestUtils(cookies=self._zspcookie).post_res(list_url)
             logger.info(f"获取极影视分类rsp_body ：{rsp_body}")
