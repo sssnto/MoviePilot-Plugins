@@ -5,6 +5,7 @@ import pytz
 import re
 import random
 import time
+from urllib.parse import quote
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
@@ -225,7 +226,7 @@ class ZspaceMediaFresh(_PluginBase):
             return False
 
         # 检查必要的cookie字段
-        required_fields = ['token', 'device_id', 'device', 'version', '_l', 'nas_id']
+        required_fields = ['zenithtoken', 'device_id', 'device', 'version', '_l', 'nas_id']
         missing_fields = []
         for field in required_fields:
             if field not in cookie:
@@ -235,7 +236,10 @@ class ZspaceMediaFresh(_PluginBase):
             logger.error(f"cookie中缺少必要字段：{missing_fields}")
             return False
 
-        token = cookie['token']
+        # 传入 HTTP 前对 cookie 进行编码
+        zspcookie_encoded = quote(self._zspcookie, safe='=; ')
+
+        token = cookie['zenithtoken']
         # logger.info(f"token ：{token}")
         device_id = cookie['device_id']
         # logger.info(f"device_id ：{device_id}")
@@ -258,7 +262,7 @@ class ZspaceMediaFresh(_PluginBase):
         try:
             # logger.info(f"获取极影视分类cookies ：{self._zspcookie}")
 
-            rsp_body=RequestUtils(cookies=self._zspcookie).post_res(list_url)
+            rsp_body=RequestUtils(cookies=zspcookie_encoded).post_res(list_url)
             logger.info(f"获取极影视分类rsp_body ：{rsp_body}")
 
             res = rsp_body.json()
@@ -277,7 +281,7 @@ class ZspaceMediaFresh(_PluginBase):
                         # 提交刷新请求
                         rescan_url = "%s/zvideo/classification/rescan?&rnd=%s&webagent=v2" % (self._zsphost, self.generate_string())
                         formdata = {"classification_id": name_id_dict[classify],"device_id":device_id,"token":token,"device":device,"plat":"web","_l":_l,"version":version,"nasid":nasid}
-                        rescanres = RequestUtils(headers={"Content-Type": "application/x-www-form-urlencoded"},cookies=self._zspcookie).post_res(rescan_url,formdata)
+                        rescanres = RequestUtils(headers={"Content-Type": "application/x-www-form-urlencoded"},cookies=zspcookie_encoded).post_res(rescan_url,formdata)
                         logger.info(f"提交刷新rescanres resp：{rsp_body}")
                         rescanres_json = rescanres.json()
                         logger.debug(f"提交刷新请求--rescanres_json：{rescanres_json}")
@@ -291,7 +295,7 @@ class ZspaceMediaFresh(_PluginBase):
                             while True:
                                 #轮询状态
                                 resultRep = RequestUtils(headers={"Content-Type": "application/x-www-form-urlencoded"},
-                                                        cookies=self._zspcookie).post_res(result_url, formdata)
+                                                        cookies=zspcookie_encoded).post_res(result_url, formdata)
                                 logger.info(f"获取刷新结果 resultRep：{resultRep}")
 
                                 result_json = resultRep.json()
