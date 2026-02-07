@@ -25,7 +25,7 @@ class ZspaceMediaFresh(_PluginBase):
     # 插件图标
     plugin_icon = "https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/icons/Zspace_B.png"
     # 插件版本
-    plugin_version = "3.0.1"
+    plugin_version = "3.0.2"
     # 插件作者
     plugin_author = "sssnto"
     # 作者主页
