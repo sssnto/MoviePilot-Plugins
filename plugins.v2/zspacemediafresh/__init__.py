@@ -225,7 +225,7 @@ class ZspaceMediaFresh(_PluginBase):
             return False
 
         # 检查必要的cookie字段
-        required_fields = ['token', 'device_id', 'device', 'version', '_l', 'nas_id']
+        required_fields = ['zenithtoken', 'device_id', 'device', 'version', '_l', 'nas_id']
         missing_fields = []
         for field in required_fields:
             if field not in cookie:
@@ -235,7 +235,7 @@ class ZspaceMediaFresh(_PluginBase):
             logger.error(f"cookie中缺少必要字段：{missing_fields}")
             return False
 
-        token = cookie['token']
+        token = cookie['zenithtoken']
         # logger.info(f"token ：{token}")
         device_id = cookie['device_id']
         # logger.info(f"device_id ：{device_id}")
