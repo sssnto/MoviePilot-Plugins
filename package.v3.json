@@ -1,0 +1,15 @@
+{
+    "ZspaceMediaFresh": {
+        "name": "fresh极影视",
+        "description": "按 MoviePilot 整理历史定时刷新极影视分类",
+        "labels": "极空间",
+        "version": "3.1.0",
+        "icon": "https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/icons/Zspace_B.png",
+        "author": "sssnto",
+        "level": 1,
+        "system_version": ">=3.0.0",
+        "history": {
+            "v3.1.0": "适配 MoviePilot V3，修复失败任务误报成功"
+        }
+    }
+}

@@ -5,6 +5,8 @@ MoviePilot官方插件市场：https://github.com/jxxghp/MoviePilot-Plugins
 
 PLUGIN_MARKET 添加： https://github.com/gxterry/MoviePilot-Plugins
 
+MoviePilot V3 使用 `plugins.v3/zspacemediafresh` 和 `package.v3.json` 中的“fresh极影视”插件；V2 实现仍保留在 `plugins.v2/`。V3 配置项沿用原字段，升级后请检查极空间地址、Cookie 和定时表达式。
+
 ## 第三方插件库开发说明
 > 请不要开发用于破解MoviePilot用户认证、色情、赌博等违法违规内容的插件，共同维护健康的开发环境！
 
@@ -43,5 +45,4 @@ PLUGIN_MARKET 添加： https://github.com/gxterry/MoviePilot-Plugins
     v1.0  读取极空间未读的系统消息，推送到MP消息渠道
 
 > 实现将极空间的系统消息,推送到MP选定的消息渠道
-
 
