@@ -108,7 +108,7 @@ class TestZspaceMediaFresh(unittest.TestCase):
         self.plugin.init_plugin({
             "startswith": "/cloud", "moivelib": "电影, 动漫",
             "tvlib": "电视剧，动漫", "zsphost": "nas:5055",
-            "zspcookie": "token=a; device_id=b; device=c; version=d; _l=e; nas_id=f",
+            "zspcookie": "zenithtoken=a; device_id=b; device=c; version=d; _l=e; nas_id=f",
         })
 
     def test_categories_match_same_history_type(self):
@@ -123,13 +123,20 @@ class TestZspaceMediaFresh(unittest.TestCase):
         self.assertEqual(self.plugin._selected_categories(), ["动漫", "电影"])
 
     def test_successful_refresh_and_failed_task_are_distinct(self):
+        submitted = []
         responses = iter([
             {"code": "200", "data": [{"name": "电影", "id": 10}]},
             {"code": "200", "data": {"task_id": "task-1"}},
             {"code": "200", "data": {"task_status": 2}},
         ])
-        self.plugin._post = lambda *_, **__: next(responses)
+        def post(_path, data=None):
+            if data and "classification_id" in data:
+                submitted.append(data)
+            return next(responses)
+
+        self.plugin._post = post
         self.assertTrue(self.plugin._refresh_zspace(["电影"]))
+        self.assertEqual(submitted[0]["token"], "a")
 
         responses = iter([
             {"code": "200", "data": [{"name": "电影", "id": 10}]},
@@ -147,6 +154,46 @@ class TestZspaceMediaFresh(unittest.TestCase):
         self.plugin.stop_service()
         with self.assertRaisesRegex(RuntimeError, "已停止"):
             self.plugin._wait_for_task("电影", "task-1", {}, self.plugin._stop_event)
+
+    def test_cookie_encoding_preserves_existing_escapes(self):
+        self.plugin._zspcookie = "zenithtoken=abc%2F中文; device_id=b"
+        cookies = self.plugin._request_cookies()
+        self.assertEqual(cookies["zenithtoken"], "abc%2F%E4%B8%AD%E6%96%87")
+
+    def test_http_request_uses_encoded_cookies(self):
+        captured = {}
+
+        class FakeRequest:
+            def __init__(self, **kwargs):
+                captured.update(kwargs)
+
+            def post_res(self, url, data=None, params=None):
+                captured.update(url=url, data=data, params=params)
+                return types.SimpleNamespace(status_code=200, json=lambda: {"code": "200"})
+
+        self.plugin._zspcookie = "zenithtoken=abc%2F中文; device_id=b"
+        with patch.object(PLUGIN, "RequestUtils", FakeRequest):
+            self.plugin._post("/zvideo/classification/list")
+        self.assertEqual(captured["cookies"]["zenithtoken"], "abc%2F%E4%B8%AD%E6%96%87")
+        self.assertEqual(captured["url"], "http://nas:5055/zvideo/classification/list")
+
+    def test_legacy_token_cookie_still_works(self):
+        self.plugin._zspcookie = "token=old; device_id=b; device=c; version=d; _l=e; nas_id=f"
+        submissions = []
+        responses = iter([
+            {"code": "200", "data": [{"name": "电影", "id": 10}]},
+            {"code": "200", "data": {"task_id": "task-1"}},
+            {"code": "200", "data": {"task_status": 2}},
+        ])
+
+        def post(_path, data=None):
+            if data and "classification_id" in data:
+                submissions.append(data)
+            return next(responses)
+
+        self.plugin._post = post
+        self.assertTrue(self.plugin._refresh_zspace(["电影"]))
+        self.assertEqual(submissions[0]["token"], "old")
 
 
 if __name__ == "__main__":

@@ -3,11 +3,12 @@
         "name": "fresh极影视",
         "description": "定时刷新极影视",
         "labels": "极空间",
-        "version": "3.0.1",
+        "version": "3.0.2",
         "icon": "https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/icons/Zspace_B.png",
         "author": "sssnto",
         "level": 1,
         "history": {
+            "v3.0.2": "更新 zenithtoken Cookie 字段并编码请求 Cookie",
             "v2.1.0": "兼容测试-未完成"
         }
     }

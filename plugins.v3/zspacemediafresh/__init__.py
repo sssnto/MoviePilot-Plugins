@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from threading import Event as ThreadEvent, Lock
 from time import monotonic, time
 from typing import Any
+from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -22,7 +23,7 @@ class ZspaceMediaFresh(_PluginBase):
     plugin_name = "fresh极影视"
     plugin_desc = "按 MoviePilot 整理历史定时刷新极影视分类"
     plugin_icon = "https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/icons/Zspace_B.png"
-    plugin_version = "3.1.0"
+    plugin_version = "3.1.1"
     plugin_author = "sssnto"
     author_url = "https://github.com/sssnto"
     plugin_config_prefix = "zspacemediafresh_"
@@ -166,11 +167,17 @@ class ZspaceMediaFresh(_PluginBase):
                 result[key] = value
         return result
 
+    def _request_cookies(self) -> dict[str, str]:
+        """Encode unsafe characters while preserving browser percent escapes."""
+        safe = "!#$%&'()*+-./:<=>?@[]^_`{|}~"
+        return {key: quote(value, safe=safe)
+                for key, value in self._parse_cookie(self._zspcookie).items()}
+
     def _post(self, path: str, data: dict | None = None) -> dict:
         url = f"{self._zsphost}{path}"
         response = RequestUtils(
             headers={"Content-Type": "application/x-www-form-urlencoded"},
-            cookies=self._zspcookie, timeout=20,
+            cookies=self._request_cookies(), timeout=20,
         ).post_res(url, data=data, params={"rnd": str(time()), "webagent": "v2"})
         if response is None or response.status_code != 200:
             raise RuntimeError(f"极空间请求失败：{path}，HTTP {getattr(response, 'status_code', '无响应')}")
@@ -182,8 +189,11 @@ class ZspaceMediaFresh(_PluginBase):
     def _refresh_zspace(self, categories: list[str], stop_event: ThreadEvent | None = None) -> bool:
         stop_event = stop_event or self._stop_event
         cookie = self._parse_cookie(self._zspcookie)
-        required = {"token", "device_id", "device", "version", "_l", "nas_id"}
+        required = {"device_id", "device", "version", "_l", "nas_id"}
         missing = required - cookie.keys()
+        token = cookie.get("zenithtoken") or cookie.get("token")
+        if not token:
+            missing.add("zenithtoken/token")
         if missing:
             raise ValueError(f"Cookie 缺少必要字段：{', '.join(sorted(missing))}")
         response = self._post("/zvideo/classification/list")
@@ -195,7 +205,7 @@ class ZspaceMediaFresh(_PluginBase):
             logger.info("极影视没有需要刷新的分类")
             return False
         form = {
-            "device_id": cookie["device_id"], "token": cookie["token"],
+            "device_id": cookie["device_id"], "token": token,
             "device": cookie["device"], "plat": "web", "_l": cookie["_l"],
             "version": cookie["version"], "nasid": cookie["nas_id"],
         }

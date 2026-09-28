@@ -3,7 +3,7 @@ MoviePilot官方插件市场：https://github.com/jxxghp/MoviePilot-Plugins
 
 # 使用方法
 
-PLUGIN_MARKET 添加： https://github.com/gxterry/MoviePilot-Plugins
+PLUGIN_MARKET 添加： https://github.com/sssnto/MoviePilot-Plugins
 
 MoviePilot V3 使用 `plugins.v3/zspacemediafresh` 和 `package.v3.json` 中的“fresh极影视”插件；V2 实现仍保留在 `plugins.v2/`。V3 配置项沿用原字段，升级后请检查极空间地址、Cookie 和定时表达式。
 
