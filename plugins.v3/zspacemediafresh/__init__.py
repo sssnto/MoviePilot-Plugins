@@ -23,7 +23,7 @@ class ZspaceMediaFresh(_PluginBase):
     plugin_name = "fresh极影视"
     plugin_desc = "按 MoviePilot 整理历史定时刷新极影视分类"
     plugin_icon = "https://raw.githubusercontent.com/sssnto/MoviePilot-Plugins/main/icons/Zspace_B.png"
-    plugin_version = "3.1.1"
+    plugin_version = "3.1.2"
     plugin_author = "sssnto"
     author_url = "https://github.com/sssnto"
     plugin_config_prefix = "zspacemediafresh_"
@@ -278,28 +278,93 @@ class ZspaceMediaFresh(_PluginBase):
         return []
 
     def get_form(self) -> tuple[list[dict], dict[str, Any]]:
-        fields = [
-            ("enabled", "启用插件", "VSwitch"),
-            ("onlyonce", "立即运行一次", "VSwitch"),
-            ("flushall", "刷新全部分类", "VSwitch"),
-            ("notify", "开启通知", "VSwitch"),
-            ("notifyaggregation", "聚合通知", "VSwitch"),
-            ("cron", "执行周期（5 位 cron）", "VTextField"),
-            ("timescope", "时间范围", "VTextField"),
-            ("waittime", "刷新状态查询间隔（秒）", "VTextField"),
-            ("startswith", "网盘媒体库路径", "VTextField"),
-            ("zsphost", "极空间地址", "VTextField"),
-            ("moivelib", "电影分类名（逗号分隔）", "VTextField"),
-            ("tvlib", "电视剧分类名（逗号分隔）", "VTextField"),
-            ("zspcookie", "极空间网页 Cookie", "VTextField"),
+        """Build a compact V3 configuration form without changing stored keys."""
+        def control(component: str, model: str, label: str, **props: Any) -> dict:
+            base = {"model": model, "label": label, "density": "comfortable"}
+            if component == "VSwitch":
+                base.update({"color": "primary", "inset": True, "hide-details": True})
+            else:
+                base.update({"variant": "outlined", "hide-details": "auto"})
+            base.update(props)
+            return {"component": component, "props": base}
+
+        def col(item: dict, md: int = 12, **props: Any) -> dict:
+            return {"component": "VCol",
+                    "props": {"cols": 12, "md": md, **props},
+                    "content": [item]}
+
+        def row(*items: dict) -> dict:
+            return {"component": "VRow", "props": {"dense": True},
+                    "content": list(items)}
+
+        def section(title: str, description: str, *rows: dict,
+                    show: str | None = None) -> dict:
+            props = {"variant": "outlined", "class": "mb-4 rounded-lg"}
+            if show:
+                props["show"] = show
+            return {
+                "component": "VCard", "props": props,
+                "content": [
+                    {"component": "VCardTitle", "text": title},
+                    {"component": "VCardSubtitle", "text": description},
+                    {"component": "VCardText", "content": list(rows)},
+                ],
+            }
+
+        content = [
+            section(
+                "运行方式", "设置自动刷新与手动触发",
+                row(
+                    col(control("VSwitch", "enabled", "启用定时刷新"), md=4),
+                    col(control("VSwitch", "onlyonce", "保存后运行一次"), md=4),
+                    col(control("VSwitch", "flushall", "刷新全部分类"), md=4),
+                ),
+                row(
+                    col(control("VTextField", "cron", "执行周期",
+                                placeholder="5 1 * * *", hint="5 位 Cron 表达式，留空则不定时运行"), md=8),
+                    col(control("VTextField", "waittime", "状态查询间隔（秒）",
+                                type="number", min=1), md=4),
+                ),
+            ),
+            section(
+                "按入库记录刷新", "仅刷新回溯范围内入库的网盘媒体分类",
+                row(
+                    col(control("VTextField", "startswith", "网盘媒体库路径",
+                                placeholder="/medias/links"), md=6),
+                    col(control("VTextField", "timescope", "回溯范围",
+                                type="number", min=1), md=3),
+                    col(control("VSelect", "unit", "时间单位", items=[
+                        {"title": "天", "value": "day"},
+                        {"title": "小时", "value": "hour"},
+                        {"title": "分钟", "value": "minute"},
+                    ]), md=3),
+                ),
+                row(
+                    col(control("VTextField", "moivelib", "电影分类",
+                                placeholder="电影、华语电影", hint="多个分类用逗号分隔"), md=6),
+                    col(control("VTextField", "tvlib", "电视剧分类",
+                                placeholder="电视剧、动漫", hint="多个分类用逗号分隔"), md=6),
+                ),
+                show="{{ !flushall }}",
+            ),
+            section(
+                "极空间连接", "填写极空间网页地址及当前登录的 Cookie",
+                row(
+                    col(control("VTextField", "zsphost", "极空间地址",
+                                placeholder="http://192.168.1.10:5055"), md=5),
+                    col(control("VTextField", "zspcookie", "网页 Cookie",
+                                type="password", autocomplete="new-password"), md=7),
+                ),
+            ),
+            section(
+                "消息通知", "刷新完成后通过 MoviePilot 发送消息",
+                row(
+                    col(control("VSwitch", "notify", "开启通知"), md=6),
+                    col(control("VSwitch", "notifyaggregation", "合并分类通知"),
+                        md=6, show="{{ notify }}"),
+                ),
+            ),
         ]
-        content = [{"component": component, "props": {"model": model, "label": label}}
-                   for model, label, component in fields]
-        content.insert(7, {"component": "VSelect", "props": {
-            "model": "unit", "label": "时间单位",
-            "items": [{"title": "天", "value": "day"}, {"title": "小时", "value": "hour"},
-                      {"title": "分钟", "value": "minute"}],
-        }})
         return [{"component": "VForm", "content": content}], {
             "enabled": False, "onlyonce": False, "flushall": False,
             "notify": False, "notifyaggregation": False,

@@ -195,6 +195,26 @@ class TestZspaceMediaFresh(unittest.TestCase):
         self.assertTrue(self.plugin._refresh_zspace(["电影"]))
         self.assertEqual(submissions[0]["token"], "old")
 
+    def test_form_groups_controls_without_losing_config_fields(self):
+        form, defaults = self.plugin.get_form()
+
+        def walk(node):
+            yield node
+            for child in node.get("content", []):
+                yield from walk(child)
+
+        nodes = list(walk(form[0]))
+        models = [node.get("props", {}).get("model") for node in nodes
+                  if node.get("props", {}).get("model")]
+        self.assertEqual(set(models), set(defaults))
+        self.assertEqual(len(models), len(defaults))
+        self.assertEqual(sum(node["component"] == "VCard" for node in nodes), 4)
+        self.assertTrue(any(node.get("props", {}).get("show") == "{{ !flushall }}"
+                            for node in nodes))
+        cookie_field = next(node for node in nodes
+                            if node.get("props", {}).get("model") == "zspcookie")
+        self.assertEqual(cookie_field["props"]["type"], "password")
+
 
 if __name__ == "__main__":
     unittest.main()
